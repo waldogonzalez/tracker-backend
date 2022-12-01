@@ -1,0 +1,15 @@
+FROM openjdk:17-jdk-alpine as build
+
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+RUN ./mvnw install -q -DskipTests
+
+FROM openjdk:17-jdk-alpine
+ARG JAR_FILE=target/*.jar
+COPY --from=build ${JAR_FILE} app.jar
+
+EXPOSE 7234
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar ${0} ${@}"]

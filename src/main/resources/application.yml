@@ -1,0 +1,39 @@
+server:
+  port: 7234
+  error:
+    include-message: always
+build:
+  version: @project.version@
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    # show-sql: true
+    properties:
+      hibernate:
+        default_schema: tracker
+        types.print.banner: false
+  datasource:
+    url: jdbc:postgresql://localhost:5433/tracker
+    username: tracker
+    password: tracker
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    encoding: utf8
+    default-schema: tracker
+    schemas:
+      - tracker
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+security:
+  jwt:
+    secret: cmVuZGljaW9uZXNzZWNyZXRvc2VjcmV0b3JlbmRpY2lvbmVzMTIzNDU2Nzg5
+    expiration: 3153600
+mqtt:
+  url: tcp://localhost:1883
+  pass:
