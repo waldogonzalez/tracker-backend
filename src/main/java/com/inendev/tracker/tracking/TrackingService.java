@@ -19,11 +19,14 @@ import java.util.stream.Collectors;
 @Service
 public class TrackingService {
     private final TrackingRepository repository;
+    private final DeviceService deviceService;
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'");
     private final Mapper<Tracking, TrackingDto> multipleMapper;
 
-    public TrackingService(TrackingRepository repository, TrackingMapperFactory mapperFactory) {
+    public TrackingService(TrackingRepository repository, DeviceService deviceService,
+                           TrackingMapperFactory mapperFactory) {
         this.repository = repository;
+        this.deviceService = deviceService;
         this.multipleMapper = mapperFactory.getForMultiple();
     }
 
@@ -42,6 +45,8 @@ public class TrackingService {
         tracking.setUuid(dp.getUuid());
         tracking.setDeviceId(trackingPayload.getEndDeviceIds().getDeviceId());
         tracking.setTimestamp(dateFormat.parse(trackingPayload.getUplinkMessage().getReceivedAt()));
+
+        deviceService.saveIfNotRegistered(tracking.getDeviceId());
 
         this.repository.save(tracking);
     }
