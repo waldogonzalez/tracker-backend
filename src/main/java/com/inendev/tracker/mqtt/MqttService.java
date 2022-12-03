@@ -9,6 +9,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class MqttService {
     private final IMqttClient mqttClient;
@@ -31,8 +33,12 @@ public class MqttService {
 
     public <T> void subscribe(String topic, IMqttCallback<T> callback, Class<T> clazz) throws MqttException {
         mqttClient.subscribe(topic, (t, msg) -> {
-            T payload = mapper.readValue(msg.getPayload(), clazz);
-            callback.callback(topic, payload);
+            try {
+                T payload = mapper.readValue(msg.getPayload(), clazz);
+                callback.callback(topic, payload);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 

@@ -14,12 +14,15 @@ public class MqttConfiguration {
     private String url;
     @Value("${mqtt.pass}")
     private String pass;
+    @Value("${mqtt.user-name}")
+    private String userName;
 
     @Bean
     public IMqttClient mqttClient() throws MqttException {
         MqttClient mqttclient = new MqttClient(url, "demo");
         MqttConnectOptions options = new MqttConnectOptions();
-        if (pass != null) {
+        if (pass != null && userName != null) {
+            options.setUserName(userName);
             options.setPassword(pass.toCharArray());
         }
         options.setAutomaticReconnect(true);

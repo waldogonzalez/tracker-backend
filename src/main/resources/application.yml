@@ -1,5 +1,5 @@
 server:
-  port: 7234
+  port: 7240
   error:
     include-message: always
 build:
@@ -25,15 +25,19 @@ spring:
     default-schema: tracker
     schemas:
       - tracker
+    locations: classpath:db/migrations
   batch:
     job:
       enabled: false
-    jdbc:
-      initialize-schema: always
 security:
   jwt:
     secret: cmVuZGljaW9uZXNzZWNyZXRvc2VjcmV0b3JlbmRpY2lvbmVzMTIzNDU2Nzg5
     expiration: 3153600
 mqtt:
-  url: tcp://localhost:1883
-  pass:
+  url: tcp://nam1.cloud.thethings.network
+  user-name: poc-arauco@ttn
+  pass: NNSXS.MAJEWVYJWIMVR765UP2Y5UR64FCCFMSSWYJAXPY.UUNMIGF3W5WQLNMA5MJR6O3R2SYC6N2E4BQUWVGLYJ4PMSYZB4CQ
+  topics:
+    root: v3/poc-arauco@ttn
+    tracking: devices/lbt1-arauco/up
+
