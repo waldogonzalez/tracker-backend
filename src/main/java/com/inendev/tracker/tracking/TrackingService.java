@@ -6,6 +6,7 @@ import com.inendev.tracker.dto.TrackingPayload;
 import com.inendev.tracker.mapper.Mapper;
 import com.inendev.tracker.mapper.TrackingMapperFactory;
 import com.inendev.tracker.repository.TrackingRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class TrackingService {
     private final TrackingRepository repository;
     private final DeviceService deviceService;
-    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final Mapper<Tracking, TrackingDto> multipleMapper;
 
     public TrackingService(TrackingRepository repository, DeviceService deviceService,
@@ -44,7 +45,10 @@ public class TrackingService {
         tracking.setStepCount(dp.getStepCount());
         tracking.setUuid(dp.getUuid());
         tracking.setDeviceId(trackingPayload.getEndDeviceIds().getDeviceId());
-        tracking.setTimestamp(dateFormat.parse(trackingPayload.getUplinkMessage().getReceivedAt()));
+        String receivedAt = trackingPayload.getUplinkMessage().getReceivedAt().replace("T", " ").replace("Z", "");
+        tracking.setTimestamp(dateFormat.parse(receivedAt));
+
+        deviceService.saveIfNotRegistered(tracking.getDeviceId());
 
         deviceService.saveIfNotRegistered(tracking.getDeviceId());
 
@@ -52,6 +56,6 @@ public class TrackingService {
     }
 
     public List<TrackingDto> getAll() {
-        return repository.findAll().stream().map(multipleMapper::map).collect(Collectors.toList());
+        return repository.findAll(Sort.by(Sort.Order.desc("id"))).stream().map(multipleMapper::map).collect(Collectors.toList());
     }
 }
