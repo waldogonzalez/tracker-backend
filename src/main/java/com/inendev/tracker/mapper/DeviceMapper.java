@@ -17,6 +17,7 @@ public class DeviceMapper implements Mapper<Device, DeviceDTO> {
         DeviceDTO deviceDto = new DeviceDTO();
         deviceDto.setId(entity.getId());
         deviceDto.setName(entity.getName());
+        deviceDto.setBattery(entity.getBattery());
         return deviceDto;
     }
 }

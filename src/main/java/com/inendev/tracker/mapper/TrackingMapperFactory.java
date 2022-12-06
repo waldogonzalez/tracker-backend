@@ -1,19 +1,19 @@
 package com.inendev.tracker.mapper;
 
-import com.inendev.tracker.domain.Tracking;
+import com.inendev.tracker.domain.BeaconRead;
 import com.inendev.tracker.dto.TrackingDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrackingMapperFactory implements MapperFactory<Tracking, TrackingDto> {
+public class TrackingMapperFactory implements MapperFactory<BeaconRead, TrackingDto> {
 
     @Override
-    public Mapper<Tracking, TrackingDto> getForSingle() {
+    public Mapper<BeaconRead, TrackingDto> getForSingle() {
         return TrackingMapper.get();
     }
 
     @Override
-    public Mapper<Tracking, TrackingDto> getForMultiple() {
+    public Mapper<BeaconRead, TrackingDto> getForMultiple() {
         return TrackingMapper.get();
     }
 }

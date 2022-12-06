@@ -1,8 +1,11 @@
 package com.inendev.tracker.dto;
 
+import java.math.BigDecimal;
+
 public class DeviceDTO {
     private Long id;
     private String name;
+    private BigDecimal battery;
 
     public Long getId() {
         return id;
@@ -18,5 +21,13 @@ public class DeviceDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getBattery() {
+        return battery;
+    }
+
+    public void setBattery(BigDecimal battery) {
+        this.battery = battery;
     }
 }

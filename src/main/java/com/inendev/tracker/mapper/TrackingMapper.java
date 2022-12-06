@@ -1,9 +1,9 @@
 package com.inendev.tracker.mapper;
 
-import com.inendev.tracker.domain.Tracking;
+import com.inendev.tracker.domain.BeaconRead;
 import com.inendev.tracker.dto.TrackingDto;
 
-public class TrackingMapper implements Mapper<Tracking, TrackingDto> {
+public class TrackingMapper implements Mapper<BeaconRead, TrackingDto> {
 
     private TrackingMapper() {
     }
@@ -13,7 +13,7 @@ public class TrackingMapper implements Mapper<Tracking, TrackingDto> {
     }
 
     @Override
-    public TrackingDto map(Tracking entity) {
+    public TrackingDto map(BeaconRead entity) {
         TrackingDto trackingDto = new TrackingDto();
         trackingDto.setId(entity.getId());
         trackingDto.setAddr(entity.getAddr());
@@ -26,6 +26,7 @@ public class TrackingMapper implements Mapper<Tracking, TrackingDto> {
         trackingDto.setUuid(entity.getUuid());
         trackingDto.setDeviceId(entity.getDeviceId());
         trackingDto.setTimestamp(entity.getTimestamp());
+        trackingDto.setBeaconName(entity.getBeaconName());
         return trackingDto;
     }
 }

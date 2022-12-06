@@ -1,6 +1,7 @@
 package com.inendev.tracker.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "device")
@@ -17,6 +18,9 @@ public class Device {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "battery")
+    private BigDecimal battery;
+
     public Long getId() {
         return id;
     }
@@ -31,5 +35,13 @@ public class Device {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getBattery() {
+        return battery;
+    }
+
+    public void setBattery(BigDecimal battery) {
+        this.battery = battery;
     }
 }

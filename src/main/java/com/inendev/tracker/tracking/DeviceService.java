@@ -8,6 +8,7 @@ import com.inendev.tracker.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,14 +35,16 @@ public class DeviceService {
     }
 
     @Transactional
-    public DeviceDTO saveIfNotRegistered(String name) {
+    public DeviceDTO saveIfNotRegistered(String name, BigDecimal battery) {
         Optional<Device> byName = repository.findByName(name);
         if (byName.isEmpty()) {
             Device device = new Device();
             device.setName(name);
+            device.setBattery(battery);
             repository.save(device);
             return singleMapper.map(device);
         } else {
+            byName.ifPresent(d -> d.setBattery(battery));
             return singleMapper.map(byName.get());
         }
     }

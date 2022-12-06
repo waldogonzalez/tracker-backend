@@ -26,6 +26,8 @@ public class TrackingDto {
 
     private Date timestamp;
 
+    private String beaconName;
+
     public Long getId() {
         return id;
     }
@@ -112,5 +114,13 @@ public class TrackingDto {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getBeaconName() {
+        return beaconName;
+    }
+
+    public void setBeaconName(String beaconName) {
+        this.beaconName = beaconName;
     }
 }

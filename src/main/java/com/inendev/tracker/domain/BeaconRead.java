@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "decoded_payload")
-public class Tracking extends CreationAuditable {
+public class BeaconRead extends CreationAuditable {
     @Id
     @SequenceGenerator(name = "decoded_payload_id_seq",
             sequenceName = "decoded_payload_id_seq",
@@ -50,6 +50,9 @@ public class Tracking extends CreationAuditable {
 
     @Column(name = "ts")
     private Date timestamp;
+
+    @Column(name = "beacon_name")
+    private String beaconName;
 
     public String getDeviceId() {
         return deviceId;
@@ -145,5 +148,13 @@ public class Tracking extends CreationAuditable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getBeaconName() {
+        return beaconName;
+    }
+
+    public void setBeaconName(String beaconName) {
+        this.beaconName = beaconName;
     }
 }

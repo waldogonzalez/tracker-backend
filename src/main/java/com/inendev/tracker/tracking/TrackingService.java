@@ -1,10 +1,12 @@
 package com.inendev.tracker.tracking;
 
-import com.inendev.tracker.domain.Tracking;
+import com.inendev.tracker.domain.BeaconRead;
+import com.inendev.tracker.domain.BeaconUuidMap;
 import com.inendev.tracker.dto.TrackingDto;
 import com.inendev.tracker.dto.TrackingPayload;
 import com.inendev.tracker.mapper.Mapper;
 import com.inendev.tracker.mapper.TrackingMapperFactory;
+import com.inendev.tracker.repository.BeaconUuidMapRepository;
 import com.inendev.tracker.repository.TrackingRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,39 +22,43 @@ import java.util.stream.Collectors;
 @Service
 public class TrackingService {
     private final TrackingRepository repository;
+    private final BeaconUuidMapRepository beaconUuidMapRepository;
     private final DeviceService deviceService;
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final Mapper<Tracking, TrackingDto> multipleMapper;
+    private final Mapper<BeaconRead, TrackingDto> multipleMapper;
 
-    public TrackingService(TrackingRepository repository, DeviceService deviceService,
+    public TrackingService(TrackingRepository repository, BeaconUuidMapRepository beaconUuidMapRepository, DeviceService deviceService,
                            TrackingMapperFactory mapperFactory) {
         this.repository = repository;
+        this.beaconUuidMapRepository = beaconUuidMapRepository;
         this.deviceService = deviceService;
         this.multipleMapper = mapperFactory.getForMultiple();
     }
 
     @Transactional
     public void save(TrackingPayload trackingPayload) throws ParseException {
-        Tracking tracking = new Tracking();
+        BeaconRead beaconRead = new BeaconRead();
         TrackingPayload.DecodedPayload dp = trackingPayload.getUplinkMessage().getDecodedPayload();
-        tracking.setAddr(dp.getAddr());
-        tracking.setAlarm(dp.getAlarm());
-        tracking.setBatV(BigDecimal.valueOf(dp.getBatV()));
-        tracking.setBatV(BigDecimal.valueOf(dp.getBatV()));
-        tracking.setMajor(dp.getMajor());
-        tracking.setMinor(dp.getMinor());
-        tracking.setRssi(dp.getRssi());
-        tracking.setStepCount(dp.getStepCount());
-        tracking.setUuid(dp.getUuid());
-        tracking.setDeviceId(trackingPayload.getEndDeviceIds().getDeviceId());
+        beaconRead.setAddr(dp.getAddr());
+        beaconRead.setAlarm(dp.getAlarm());
+        beaconRead.setBatV(BigDecimal.valueOf(dp.getBatV()));
+        beaconRead.setBatV(BigDecimal.valueOf(dp.getBatV()));
+        beaconRead.setMajor(dp.getMajor());
+        beaconRead.setMinor(dp.getMinor());
+        beaconRead.setRssi(dp.getRssi());
+        beaconRead.setStepCount(dp.getStepCount());
+        beaconRead.setUuid(dp.getUuid());
+        beaconRead.setDeviceId(trackingPayload.getEndDeviceIds().getDeviceId());
         String receivedAt = trackingPayload.getUplinkMessage().getReceivedAt().replace("T", " ").replace("Z", "");
-        tracking.setTimestamp(dateFormat.parse(receivedAt));
+        beaconRead.setTimestamp(dateFormat.parse(receivedAt));
 
-        deviceService.saveIfNotRegistered(tracking.getDeviceId());
+        beaconUuidMapRepository.findByUuid(beaconRead.getUuid())
+                .map(BeaconUuidMap::getName)
+                .ifPresent(beaconRead::setBeaconName);
 
-        deviceService.saveIfNotRegistered(tracking.getDeviceId());
+        deviceService.saveIfNotRegistered(beaconRead.getDeviceId(), beaconRead.getBatV());
 
-        this.repository.save(tracking);
+        this.repository.save(beaconRead);
     }
 
     public List<TrackingDto> getAll() {
